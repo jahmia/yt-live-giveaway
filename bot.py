@@ -1,8 +1,9 @@
 # coding utf-8
+import json
 import requests
-import login
 
 from urllib.parse import urlparse
+from googleapiclient.discovery import build
 
 youtube = None
 
@@ -36,33 +37,70 @@ def set_keyword():
 def get_participants():
     pass
 
-def get_video_comments(video_id):
+def get_video_details(video_id):
     request = youtube.videos().list(
-        part='contentDetails,statistics',
+        part='snippet,statistics,liveStreamingDetails',
         id=video_id
     )
     response = request.execute()
     content = response.get('items', [])
-    comment_count = content[0]['statistics']['commentCount'] if content and content[0] else 0
-    print(f'Comment count: {comment_count}')
-    return comment_count
+    content = content[0] if content else []
+
+    res = {
+        'id': content.get('id'),
+        'title': content['snippet']['title'],
+        'channelTitle': content['snippet']['channelTitle'],
+        'liveBroadcastContent': content['snippet']['liveBroadcastContent'],
+        'commentCount': int(content.get('statistics')['commentCount'])
+    }
+    print("\nHere is some details about the youtube video.")
+    print(json.dumps(res, indent=4))
+    return res
 
 def get_video_comments(video_id):
     # TODO: Also check comments for live video
     # Thes comments should be ordered by time
     comments = None
 
-    request = youtube.videos().list(
-        part='contentDetails,statistics',
-        id=video_id
+    # https://developers.google.com/youtube/v3/docs/videos#liveStreamingDetails
+    request = youtube.commentThreads().list(
+        part="id,snippet",
+        videoId=video_id,
+        # textFormat='plainText'
     )
     response = request.execute()
-    content = response.get('items', [])
-    comments = content[0][''][''] if content and content[0] else 0
+    content = response.get('items')
+    # print(json.dumps(content, indent=4))
+    comments = []
+    for ct in content:
+        c = ct.get('snippet').get('topLevelComment')
+        s = c.get('snippet')
+        comments.append({
+            "kind": c['kind'],
+            "id": c['id'],
+            "authorDisplayName": s.get('authorDisplayName'),
+            "textDisplay": s.get('textDisplay'),
+            "publishedAt": s.get('publishedAt'),
+            "updatedAt": s.get('updatedAt'),
+        })
+    
+    next_page = response.get('nextPageToken')
+    
+    print(json.dumps(comments, indent=4))
+    print(len(comments))
+    return content
 
-    return comments
+youtube = build(
+    'youtube', 'v3',
+    developerKey="AIzaSyBB9KR0avf3MJ3njd56raMUpjTOor9dqvo",
+)
 
-youtube = youtube_oauth.connect()
 # link = set_unlisted_stream()
-total_comment = get_video_comments("vQQEaSnQ_bs")
-key = set_keyword()
+# mekOjGBYeoQ    UCI
+# vQQEaSnQ_bs    Python Youtube API
+# TEuRjhhYkvA     Outlier Odoo - Gestion d'un parc
+
+get_video_details("vQQEaSnQ_bs")
+get_video_comments("vQQEaSnQ_bs")
+
+# key = set_keyword()
