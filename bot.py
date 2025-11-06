@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from googleapiclient.discovery import build
 
 youtube = None
+comments = []
 
 def is_structurally_valid_url(url_string):
     try:
@@ -57,38 +58,41 @@ def get_video_details(video_id):
     print(json.dumps(res, indent=4))
     return res
 
-def get_video_comments(video_id):
+def get_video_comments(video_id, keyword):
     # TODO: Also check comments for live video
-    # Thes comments should be ordered by time
-    comments = None
+    next_page = 'first'
+    while next_page:
+        if next_page == 'first':
+            next_page = None
 
-    # https://developers.google.com/youtube/v3/docs/videos#liveStreamingDetails
-    request = youtube.commentThreads().list(
-        part="id,snippet",
-        videoId=video_id,
-        # textFormat='plainText'
-    )
-    response = request.execute()
-    content = response.get('items')
-    # print(json.dumps(content, indent=4))
-    comments = []
-    for ct in content:
-        c = ct.get('snippet').get('topLevelComment')
-        s = c.get('snippet')
-        comments.append({
-            "kind": c['kind'],
-            "id": c['id'],
-            "authorDisplayName": s.get('authorDisplayName'),
-            "textDisplay": s.get('textDisplay'),
-            "publishedAt": s.get('publishedAt'),
-            "updatedAt": s.get('updatedAt'),
-        })
+        # https://developers.google.com/youtube/v3/docs/videos#liveStreamingDetails
+        request = youtube.commentThreads().list(
+            part="id,snippet",
+            videoId=video_id,
+            textFormat='plainText',
+            searchTerms=keyword,
+            order='time',
+            maxResults=100,
+            pageToken=next_page
+        )
+        response = request.execute()
+        content = response.get('items')
+        for ct in content:
+            c = ct.get('snippet').get('topLevelComment')
+            s = c.get('snippet')
+            comments.append({
+                "kind": c['kind'],
+                "id": c['id'],
+                "authorDisplayName": s.get('authorDisplayName'),
+                "textDisplay": s.get('textDisplay'),
+                "publishedAt": s.get('publishedAt'),
+                "updatedAt": s.get('updatedAt'),
+            })
+        
+        next_page = response.get('nextPageToken')
     
-    next_page = response.get('nextPageToken')
-    
-    print(json.dumps(comments, indent=4))
-    print(len(comments))
-    return content
+    print(f"Found {len(comments)} comments with keyword '{keyword}':")
+    return comments
 
 youtube = build(
     'youtube', 'v3',
@@ -101,6 +105,7 @@ youtube = build(
 # TEuRjhhYkvA     Outlier Odoo - Gestion d'un parc
 
 get_video_details("vQQEaSnQ_bs")
-get_video_comments("vQQEaSnQ_bs")
+key = set_keyword()
+get_video_comments("vQQEaSnQ_bs", keyword=key)
 
-# key = set_keyword()
+
