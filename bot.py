@@ -1,8 +1,10 @@
 # coding utf-8
 import requests
+import login
 
 from urllib.parse import urlparse
-from . import login
+
+youtube = None
 
 def is_structurally_valid_url(url_string):
     try:
@@ -34,25 +36,33 @@ def set_keyword():
 def get_participants():
     pass
 
-
-def get_video_comments(video_id)
+def get_video_comments(video_id):
     request = youtube.videos().list(
         part='contentDetails,statistics',
         id=video_id
     )
-
-    # request = youtube.playlistItems().list(
-    #     part='status',
-    #     playlistId='PLQYbfmTsxXjCGZVtWlzOW3JKuVkqy_UMU'
-    # )
-
     response = request.execute()
-
     content = response.get('items', [])
     comment_count = content[0]['statistics']['commentCount'] if content and content[0] else 0
     print(f'Comment count: {comment_count}')
+    return comment_count
 
+def get_video_comments(video_id):
+    # TODO: Also check comments for live video
+    # Thes comments should be ordered by time
+    comments = None
 
+    request = youtube.videos().list(
+        part='contentDetails,statistics',
+        id=video_id
+    )
+    response = request.execute()
+    content = response.get('items', [])
+    comments = content[0][''][''] if content and content[0] else 0
 
-link = set_unlisted_stream("vQQEaSnQ_bs")
+    return comments
+
+youtube = youtube_oauth.connect()
+# link = set_unlisted_stream()
+total_comment = get_video_comments("vQQEaSnQ_bs")
 key = set_keyword()
