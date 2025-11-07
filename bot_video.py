@@ -94,6 +94,42 @@ def get_video_comments(video_id, keyword):
     print(f"Found {len(comments)} comments with keyword '{keyword}':")
     return comments
 
+def get_video_comments(video_id, keyword):
+    # TODO: Also check comments for live video
+    next_page = 'first'
+    while next_page:
+        if next_page == 'first':
+            next_page = None
+
+        # https://developers.google.com/youtube/v3/docs/videos#liveStreamingDetails
+        request = youtube.commentThreads().list(
+            part="id,snippet",
+            videoId=video_id,
+            textFormat='plainText',
+            searchTerms=keyword,
+            order='time',
+            maxResults=100,
+            pageToken=next_page
+        )
+        response = request.execute()
+        content = response.get('items')
+        for ct in content:
+            c = ct.get('snippet').get('topLevelComment')
+            s = c.get('snippet')
+            comments.append({
+                "kind": c['kind'],
+                "id": c['id'],
+                "authorDisplayName": s.get('authorDisplayName'),
+                "textDisplay": s.get('textDisplay'),
+                "publishedAt": s.get('publishedAt'),
+                "updatedAt": s.get('updatedAt'),
+            })
+        
+        next_page = response.get('nextPageToken')
+    
+    print(f"Found {len(comments)} comments with keyword '{keyword}':")
+    return comments
+
 youtube = build(
     'youtube', 'v3',
     developerKey="AIzaSyBB9KR0avf3MJ3njd56raMUpjTOor9dqvo",
@@ -104,8 +140,8 @@ youtube = build(
 # vQQEaSnQ_bs    Python Youtube API
 # TEuRjhhYkvA     Outlier Odoo - Gestion d'un parc
 
-get_video_details("vQQEaSnQ_bs")
+get_video_details("onogE5uepoQ")
 key = set_keyword()
-get_video_comments("vQQEaSnQ_bs", keyword=key)
+get_video_comments("onogE5uepoQ", keyword=key)
 
 

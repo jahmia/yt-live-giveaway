@@ -28,7 +28,9 @@ if not credentials or not credentials.valid:
         flow = InstalledAppFlow.from_client_secrets_file(
             'client_secrets.json',
             scopes=[
-                'https://www.googleapis.com/auth/youtube.readonly'
+                'https://www.googleapis.com/auth/youtube.readonly',
+                'https://www.googleapis.com/auth/youtube',
+                'https://www.googleapis.com/auth/youtube.force-ssl',
             ]
         )
 
