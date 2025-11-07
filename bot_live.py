@@ -1,6 +1,7 @@
 # coding utf-8
 import json
 import requests
+import youtube_oauth
 
 from urllib.parse import urlparse
 from googleapiclient.discovery import build
@@ -11,15 +12,14 @@ comments = []
 def is_structurally_valid_url(url_string):
     try:
         result = urlparse(url_string)
-        print(result)
-        return all([result.netloc])
+        return all([result.netloc, result.path])
     except ValueError:
         return False
 
 def set_unlisted_stream(stream=None):
     if not stream:
-        stream = input("Enter the stream link : ")
-        if not is_structurally_valid_url(stream):
+        stream = input("Enter the stream link (in form youtu.be/videoID): ")
+        if not is_structurally_valid_url("http://youtu.be/" + stream):
             print("The link is not valid. Please enter a valid URL.")
             return set_unlisted_stream()
     return stream
@@ -65,17 +65,10 @@ def get_live_chats(liveChatId, keyword):
     print(json.dumps(response, indent=4))
     return response
 
+youtube = youtube_oauth.connect()
 
-# youtube = youtube_oauth.connect()
-youtube = build(
-    'youtube', 'v3',
-    developerKey="AIzaSyBB9KR0avf3MJ3njd56raMUpjTOor9dqvo",
-)
-# link = set_unlisted_stream()
-# mekOjGBYeoQ    UCI
-# vQQEaSnQ_bs    Python Youtube API
-# TEuRjhhYkvA     Outlier Odoo - Gestion d'un parc
-live = get_live_details("l8PMl7tUDIE")
+videoId = set_unlisted_stream()
+live = get_live_details(videoId)
 key = set_keyword()
 liveChatId = live.get('liveStreamingDetails', {}).get('activeLiveChatId')
 get_live_chats(liveChatId, keyword=key)
