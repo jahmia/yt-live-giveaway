@@ -3,3 +3,4 @@ disable=C0114,C0115,C0116,E1101
 
 [MESSAGES CONTROL]
 # disable=W0611 # Example: disable unused-import warning
+disable=W0105 # Example: disable unused-import warning

@@ -32,7 +32,7 @@ def set_unlisted_stream(stream=None):
     return stream
 
 def set_keyword():
-    keyword = input("Enter keyword to monitor : ")
+    keyword = input("\nEnter keyword to monitor : ")
     return keyword
 
 def get_participants():
@@ -40,7 +40,7 @@ def get_participants():
 
 def get_live_details(video_id):
     request = YOUTUBE.videos().list(
-        part='snippet,statistics,liveStreamingDetails',
+        part='snippet,liveStreamingDetails',
         id=video_id
     )
     response = request.execute()
@@ -52,7 +52,6 @@ def get_live_details(video_id):
         'channelTitle': content['snippet']['channelTitle'],
         'liveBroadcastContent': content['snippet']['liveBroadcastContent'],
         'liveStreamingDetails': content.get('liveStreamingDetails'),
-        'commentCount': int(content.get('statistics')['commentCount'])
     }
     print("\nHere is some details about the YOUTUBE video.")
     print(json.dumps(res, indent=4))
@@ -64,7 +63,7 @@ def get_live_details(video_id):
 
 def get_live_chats(chat_id, keyword):
     page_token = ""
-    content = []
+    content = None
     while page_token is not None:
         request = YOUTUBE.liveChatMessages().list(
             liveChatId=chat_id,
@@ -74,30 +73,45 @@ def get_live_chats(chat_id, keyword):
         )
 
         response = request.execute()
-        if response.pop('items', []):
-            content.append(response['items'])
-        print(json.dumps(response, indent=4))
+        """
+        Handle error responses
+        https://developers.google.com/youtube/v3/live/docs/liveChatMessages/list#errors
+        - 4xx and 5xx HTTP status codes
+        - rateLimitExceeded
+        """
+        if not content:
+            content = response.get('items')
+        else:
+            content.extend(response.pop('items'))
 
         wait_time = int(response.get('pollingIntervalMillis', 0)) / 1000
         wait_polling(wait_time)
 
-        if page_token != response['nextPageToken']:
+        if response['pageInfo']['totalResults'] > response['pageInfo']['resultsPerPage']:
             page_token = response.get('nextPageToken', None)
         else:
             page_token = None
-
-    print(json.dumps(content, indent=4))
-    print(len(content))
-    return 0
+    print(f"Found {len(content)} comments in total.")
+    matched_comments = []
+    for item in content:
+        comment_text = item['snippet']['displayMessage']
+        if keyword.lower() in comment_text.lower():
+            matched_comments.append(item)
+    print(f"Found {len(matched_comments)} comments matching the keyword '{keyword}':")
+    # for comment in matched_comments:
+    #     author = comment['authorDetails']['displayName']
+    #     message = comment['snippet']['displayMessage']
+    #     print(f"- {author}: {message}")
+    return matched_comments
 
 def wait_polling(seconds):
     if seconds == 0:
         return
-    print(f"Waiting for {seconds} seconds before fetching new messages...")
+    print(f"Waiting for {seconds} seconds before polling again ...")
     time.sleep(seconds)
 
 if __name__ == "__main__":
-    YOUTUBE = youtube_oauth.connect()
+    # YOUTUBE = youtube_oauth.connect()
     YOUTUBE = youtube_oauth.connect_by_api_key()
 
     videoId = set_unlisted_stream()
