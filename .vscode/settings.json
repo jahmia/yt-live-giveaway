@@ -1,0 +1,6 @@
+{
+    // "python.linting.pylintArgs": [
+    //     "--disable=C0114,C0115" // Example: disable missing-module-docstring and missing-class-docstring
+    // ],
+    // "python.linting.importStrategy": "fromEnvironment" // Use Pylint from your activated environment
+}
