@@ -33,7 +33,7 @@ def set_unlisted_stream(stream=None):
 
 def set_keyword():
     keyword = input("\nEnter keyword to monitor : ")
-    return keyword
+    return keyword.lower()
 
 def get_participants():
     pass
@@ -91,23 +91,37 @@ def get_live_chats(chat_id, keyword):
             page_token = response.get('nextPageToken', None)
         else:
             page_token = None
+
     print(f"Found {len(content)} comments in total.")
+
+    authors = list()
     matched_comments = []
     for item in content:
-        comment_text = item['snippet']['displayMessage']
-        if keyword.lower() in comment_text.lower():
-            matched_comments.append(item)
+        if not any(d.get('channelId') == item['authorDetails']['channelId'] for d in authors):
+            authors.append({
+                "channelId": item['authorDetails']['channelId'],
+                "channel_url": item['authorDetails']['channelUrl'],
+                "display_name": item['authorDetails']['displayName'],
+            })
+
+            comment_text = item['snippet']['displayMessage']
+            if keyword in comment_text.lower():
+                matched_comments.append(item)
+
     print(f"Found {len(matched_comments)} comments matching the keyword '{keyword}':")
-    # for comment in matched_comments:
-    #     author = comment['authorDetails']['displayName']
-    #     message = comment['snippet']['displayMessage']
-    #     print(f"- {author}: {message}")
+    print(f"Found {len(authors)} unique participants in total.")
+
+    for comment in matched_comments:
+        author = comment['authorDetails']['displayName']
+        message = comment['snippet']['displayMessage']
+        published_at = comment['snippet']['publishedAt']
+        print(f"On {published_at[:-12]} {author} wrote : {message}")
     return matched_comments
 
 def wait_polling(seconds):
     if seconds == 0:
         return
-    print(f"Waiting for {seconds} seconds before polling again ...")
+    print(f"... Waiting for {seconds} seconds before polling again")
     time.sleep(seconds)
 
 if __name__ == "__main__":
