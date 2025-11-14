@@ -209,4 +209,5 @@ __marimo__/
 client_secret*.json
 temp.json
 test.py
+temp.json
 token.pickle

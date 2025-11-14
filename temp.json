@@ -1,30 +1,61 @@
-{
-    "kind": "youtube#videoListResponse",
-    "etag": "NaC5ivU1A3P_2JXo1mtfxu7m9tc",
-    "items": [
-        {
-            "kind": "youtube#video",
-            "etag": "WNnxWXtS-4cHQB4iX5yc2oY4-No",
-            "id": "vQQEaSnQ_bs",
-            "contentDetails": {
-                "duration": "PT43M21S",
-                "dimension": "2d",
-                "definition": "hd",
-                "caption": "false",
-                "licensedContent": True,
-                "contentRating": {},
-                "projection": "rectangular"
-            },
-            "statistics": {
-                "viewCount": "151120",
-                "likeCount": "2808",
-                "favoriteCount": "0",
-                "commentCount": "354"
+Enter keyword to monitor : france
+... Waiting for 3.903 seconds before polling again
+Found 189 comments in total.
+Found 2 comments matching the keyword 'france':
+Found 25 unique participants in total.
+- @agomulopo7531: Bonjour France 24
+- @Firmin-t2t: bonjour France 24 la chaîne mondiale depuis Lomé Togo
+[
+    {
+        "kind": "youtube#liveChatMessage",
+        "etag": "uW3Hxkd9qnLEydMtu2pj3dy4P_Y",
+        "id": "LCC.EhwKGkNMREtyOGYyOEpBREZkNEkxZ0FkZUpBRjJB",
+        "snippet": {
+            "type": "textMessageEvent",
+            "liveChatId": "Cg0KC2w4UE1sN3RVRElFKicKGFVDQ0NQQ1pOQ2hRZEdhOUVrQVRleWU0ZxILbDhQTWw3dFVESUU",
+            "authorChannelId": "UCUJN7nTXInMJ8hVgiuKUKew",
+            "publishedAt": "2025-11-14T05:38:40.20221+00:00",
+            "hasDisplayContent": true,
+            "displayMessage": "Bonjour France 24",
+            "textMessageDetails": {
+                "messageText": "Bonjour France 24"
             }
+        },
+        "authorDetails": {
+            "channelId": "UCUJN7nTXInMJ8hVgiuKUKew",
+            "channelUrl": "http://www.youtube.com/channel/UCUJN7nTXInMJ8hVgiuKUKew",
+            "displayName": "@agomulopo7531",
+            "profileImageUrl": "https://yt3.ggpht.com/ytc/AIdro_niqJfqTB8C9mvOk2cAZyH5GrBkCgGipsgkOZDiQZmZjVU=s88-c-k-c0x00ffffff-no-rj",
+            "isVerified": false,
+            "isChatOwner": false,
+            "isChatSponsor": false,
+            "isChatModerator": false
         }
-    ],
-    "pageInfo": {
-        "totalResults": 1,
-        "resultsPerPage": 1
+    },
+    {
+        "kind": "youtube#liveChatMessage",
+        "etag": "OzIFcDtCYuPIM_ycEIP1z-R1UWw",
+        "id": "LCC.EhwKGkNLbnp5TEw3OEpBREZaUUsxZ0Fka3VBcFBR",
+        "snippet": {
+            "type": "textMessageEvent",
+            "liveChatId": "Cg0KC2w4UE1sN3RVRElFKicKGFVDQ0NQQ1pOQ2hRZEdhOUVrQVRleWU0ZxILbDhQTWw3dFVESUU",
+            "authorChannelId": "UC6lt7aTGSGV74VLaLuHi-dQ",
+            "publishedAt": "2025-11-14T06:00:18.754064+00:00",
+            "hasDisplayContent": true,
+            "displayMessage": "bonjour France 24 la cha\u00eene mondiale depuis Lom\u00e9 Togo",
+            "textMessageDetails": {
+                "messageText": "bonjour France 24 la cha\u00eene mondiale depuis Lom\u00e9 Togo"
+            }
+        },
+        "authorDetails": {
+            "channelId": "UC6lt7aTGSGV74VLaLuHi-dQ",
+            "channelUrl": "http://www.youtube.com/channel/UC6lt7aTGSGV74VLaLuHi-dQ",
+            "displayName": "@Firmin-t2t",
+            "profileImageUrl": "https://yt3.ggpht.com/H-D8K_vBxSHze9T6yfnkWxgfjA8TsoiBsxdH4GIG9P-75R07YrLbqZEB1zjAKpbr1kwGry-C-w=s88-c-k-c0x00ffffff-no-rj",
+            "isVerified": false,
+            "isChatOwner": false,
+            "isChatSponsor": false,
+            "isChatModerator": false
+        }
     }
-}
+]
