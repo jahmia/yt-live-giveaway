@@ -5,6 +5,7 @@ import time
 
 from urllib.parse import urlparse
 
+import data
 import youtube_oauth
 
 YOUTUBE = None
@@ -53,6 +54,7 @@ def get_live_details(video_id):
         'liveBroadcastContent': content['snippet']['liveBroadcastContent'],
         'liveStreamingDetails': content.get('liveStreamingDetails'),
     }
+    data.insert_live_session(res)
     print("\nHere is some details about the YOUTUBE video.")
     print(json.dumps(res, indent=4))
     if 'liveBroadcastContent' in res and res['liveBroadcastContent'] != 'live':
@@ -132,4 +134,6 @@ if __name__ == "__main__":
     live = get_live_details(videoId)
     key = set_keyword()
     liveChatId = live.get('liveStreamingDetails', {}).get('activeLiveChatId')
+    data.create_tables()
     get_live_chats(liveChatId, keyword=key)
+    data.close_connection()
